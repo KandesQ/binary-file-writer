@@ -2,9 +2,11 @@
 #include <utility>
 
 #include "src/file/TextFileReader.h"
+#include "src//file/BinaryFileWriter.h"
 #include "src/ListNode.h"
 
 #define IN_FILE_NAME "inlet.in"
+#define OUT_FILE_NAME "outlet.out"
 
 void printListData(std::shared_ptr<ListNode> headNode) {
     auto currentNode = std::move(headNode);
@@ -24,6 +26,9 @@ int main() {
 
     // Test: list is read successfully
     printListData(listHeadNodeOpt.value());
+
+    auto binaryFileWriter = BinaryFileWriter(OUT_FILE_NAME);
+    binaryFileWriter.writeList(listHeadNodeOpt.value());
 
     return 0;
 }
