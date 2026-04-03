@@ -9,6 +9,7 @@
 #include <string>
 #include <optional>
 #include <memory>
+#include <vector>
 
 #include "../ListNode.h"
 

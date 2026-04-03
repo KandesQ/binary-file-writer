@@ -7,12 +7,17 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include <utility>
+#include <ios>
+#include <stdexcept>
+#include <optional>
+#include <memory>
 
 #include "TextFileReader.h"
 
 TextFileReader::TextFileReader(std::string filename)
     : filename(std::move(filename)),
-      input(this->filename, std::ios_base::in) {
+      input(this->filename, std::ios::in) {
 
     if (!input.is_open()) {
         throw std::runtime_error(
