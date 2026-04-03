@@ -8,8 +8,8 @@
 #define IN_FILE_NAME "inlet.in"
 #define OUT_FILE_NAME "outlet.out"
 
-void printListData(std::shared_ptr<ListNode> headNode) {
-    auto currentNode = std::move(headNode);
+void printListData(const std::shared_ptr<ListNode>& headNode) {
+    auto currentNode = headNode;
     while (currentNode) {
         std::cout << currentNode->data << std::endl;
         currentNode = currentNode->next;
@@ -21,6 +21,7 @@ int main() {
     const auto listHeadNodeOpt = textFileReader.readList();
 
     if (!listHeadNodeOpt) {
+        std::cout << "Couldn't read a linked list file from " << IN_FILE_NAME << std::endl;
         return -1;
     }
 
