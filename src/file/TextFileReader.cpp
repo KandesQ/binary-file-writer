@@ -30,7 +30,7 @@ TextFileReader::TextFileReader(std::string filename)
 std::optional<std::shared_ptr<ListNode>> TextFileReader::readList() {
     int nodeIndex = 0;
     std::unordered_map<int, int> nodeIndexToRandomNodeIndex;
-    std::unordered_map<int, std::shared_ptr<ListNode>> nodes;
+    std::vector<std::shared_ptr<ListNode>> nodes;
 
     // Construct nodes
     while (auto lineOpt = readLine()) {
@@ -40,7 +40,7 @@ std::optional<std::shared_ptr<ListNode>> TextFileReader::readList() {
         node->data = std::move(parts[0]);;
 
         nodeIndexToRandomNodeIndex[nodeIndex] = static_cast<int>(std::stoul(parts[1]));;
-        nodes[nodeIndex] = node;
+        nodes.push_back(node);
 
         nodeIndex++;
     }
@@ -51,25 +51,25 @@ std::optional<std::shared_ptr<ListNode>> TextFileReader::readList() {
         return std::nullopt;
     }
 
-    // Assign prev next and random
-    for (auto& [index, node]: nodes) {
+    for (int i = 0; i < nodes.size(); i++) {
+        const auto& node = nodes[i];
+
         // Prev
-        node->prev = nodes.contains(index - 1) ? nodes[index - 1]: nullptr;
+        node->prev = i != 0 ? nodes[i - 1]: nullptr;
 
         // Next
-        node->next = nodes.contains(index + 1) ? nodes[index + 1]: nullptr;
+        node->next = i != nodes.size() - 1 ? nodes[i + 1]: nullptr;
 
         // Random
-        // Remain nullptr if rand points none
-        if (nodeIndexToRandomNodeIndex[index] == -1) continue;
-
-        // End reading if random node doesn't exist in provided file
-        if (!nodes.contains(nodeIndexToRandomNodeIndex[index])) {
-            std::cout << "Node with index=" << index << " have index of random node that doesn't exist" << std::endl;
+        const auto randIndex = nodeIndexToRandomNodeIndex[i];
+        // Safe cast because there's a restriction that total nodes <= 10**6
+        if (randIndex >= static_cast<int>(nodes.size())) {
+            std::cout << "Rand node with idx="
+                      << randIndex << " doesn't exist for node with idx="
+                      << i << std::endl;
             return std::nullopt;
         }
-
-        node->rand = nodes[nodeIndexToRandomNodeIndex[index]];
+        node->rand = randIndex != -1 ? nodes[randIndex]: nullptr;
     }
 
     // Return the head
