@@ -29,11 +29,10 @@ public:
      *      1. Total nodes <= 10**6
      *
      * - Next follows node data size, data bytes, index of its random node
-     *   [uint16_t dataSize][data bytes][uint32_t randNodeIndex]
+     *   [uint16_t dataSize][data bytes]
      *
      *   Restrictions:
      *      1. Data <= 1000 symbols
-     *      2. randNodeIndex <= 10**6 - 1
      *
      * @param head The head of a linked list
      *
