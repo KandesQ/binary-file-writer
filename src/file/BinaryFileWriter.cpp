@@ -4,7 +4,8 @@
 
 #include "BinaryFileWriter.h"
 
-#include <codecvt>
+#include <string>
+#include <utility>
 #include <memory>
 #include <ios>
 
@@ -28,12 +29,12 @@ void BinaryFileWriter::writeList(const std::shared_ptr<ListNode>& head) {
     // Iterate for list. Save the size and data of each node
     currentNode = head;
     while (currentNode) {
-        std::uint16_t dataLen = currentNode->data.size();
+        std::uint16_t dataSize = currentNode->data.size();
 
-        output.write(reinterpret_cast<char*>(&dataLen), sizeof(dataLen));
+        output.write(reinterpret_cast<char*>(&dataSize), sizeof(dataSize));
         output.write(
             currentNode->data.data(),
-            dataLen
+            dataSize
         );
 
         currentNode = currentNode->next;

@@ -35,8 +35,6 @@ public:
      *      1. Data <= 1000 symbols
      *
      * @param head The head of a linked list
-     *
-     * @throws std::runtime_error Couldn't write the list
      */
     void writeList(const std::shared_ptr<ListNode>& head);
 };
