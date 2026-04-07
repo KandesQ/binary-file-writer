@@ -3,5 +3,9 @@ project(binary_file_writer)
 
 set(CMAKE_CXX_STANDARD 14)
 
+configure_file(inlet.in inlet.in COPYONLY)
+
 add_executable(binary_file_writer main.cpp
-        src/ListNode.h)
+        src/ListNode.h
+        src/file/TextFileReader.cpp
+        src/file/TextFileReader.h)
