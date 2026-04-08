@@ -17,7 +17,7 @@ void BinaryFileWriter::write_list(
     const std::unordered_map<uint32_t, int>& rand_index_match
     ) const {
 
-    std::ofstream out(this->filename, std::ios::out | std::ios::binary);
+    std::ofstream out{this->filename, std::ios::out | std::ios::binary};
     if (!out.is_open()) {
         throw std::runtime_error("Could not open " + this->filename + " file for writing");
     }

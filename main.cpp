@@ -8,7 +8,7 @@ const std::string IN_FILENAME = "inlet.in";
 const std::string OUT_FILENAME = "outlet.out";
 
 int main() {
-    TextFileReader reader(IN_FILENAME);
+    TextFileReader reader{IN_FILENAME};
 
     const List::ListInfo list_info = reader.read_list();
 
@@ -22,7 +22,7 @@ int main() {
     // Test: shows list
     List::print_list(head);
 
-    BinaryFileWriter writer(OUT_FILENAME);
+    BinaryFileWriter writer{OUT_FILENAME};
     writer.write_list(head, list_info.node_index_to_rand_node_index);
 
     List::clear_list(head);

@@ -15,7 +15,7 @@
 std::vector<std::string> split_line(const std::string& line, const char delimiter) {
     std::vector<std::string> parts;
     std::string part;
-    std::istringstream ss(line);
+    std::istringstream ss{line};
 
     while (std::getline(ss, part, delimiter)) {
         parts.push_back(std::move(part));
@@ -29,7 +29,7 @@ TextFileReader::TextFileReader(std::string filename)
 {}
 
 List::ListInfo TextFileReader::read_list() {
-    std::ifstream input(this->filename, std::ios::in);
+    std::ifstream input{this->filename, std::ios::in};
     if (!input.is_open()) {
         throw std::runtime_error(
             "Couldn't open file \"" + this->filename + "\". "
