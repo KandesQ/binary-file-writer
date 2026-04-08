@@ -28,7 +28,7 @@ TextFileReader::TextFileReader(std::string filename)
     : filename(std::move(filename))
 {}
 
-List::ListNode* TextFileReader::read_list() {
+List::ListInfo TextFileReader::read_list() {
     std::ifstream input(this->filename, std::ios::in);
     if (!input.is_open()) {
         throw std::runtime_error(
@@ -55,7 +55,7 @@ List::ListNode* TextFileReader::read_list() {
 
     if (node_ptrs.empty()) {
         std::cout << "File \" " << filename << "\" is empty. Nothing to read" << std::endl;
-        return nullptr;
+        return List::ListInfo{};
     }
 
     for (int i = 0; i < node_ptrs.size(); ++i) {
@@ -71,10 +71,12 @@ List::ListNode* TextFileReader::read_list() {
         const int rand_index = node_index_to_rand_node_index[i];
         // Safe cast because there's a restriction that total nodes <= 10**6
         if (rand_index >= static_cast<int>(node_ptrs.size())) {
-            std::cout << "Rand node with idx="
-                      << rand_index << " doesn't exist for node with idx="
-                      << i << std::endl;
-            return nullptr;
+            List::clear_list(node_ptrs[0]);
+
+            throw std::runtime_error(
+                "Rand node with idx=" + std::to_string(rand_index) +
+                " doesn't exist for node with idx=" + std::to_string(i)
+            );
         }
 
         if (rand_index <= -1) {
@@ -89,30 +91,11 @@ List::ListNode* TextFileReader::read_list() {
         }
     }
 
-    return node_ptrs[0];
-}
-
-std::unordered_map<uint32_t, int> TextFileReader::get_rand_index_match() const {
-    std::ifstream input(this->filename, std::ios::in);
-    if (!input.is_open()) {
-        throw std::runtime_error(
-            "Couldn't open file \"" + this->filename + "\". "
-            "Check if the provided file exists"
-            );
-    }
-
-    std::string line;
-    uint32_t node_index = 0;
-    std::unordered_map<uint32_t, int> node_index_to_rand_node_index;
-    while (std::getline(input, line)) {
-        int rand_index = std::stoi(split_line(line, ';')[1]);
-
-        node_index_to_rand_node_index[node_index] = rand_index;
-
-        ++node_index;
-    }
-
-    return node_index_to_rand_node_index;
+    return List::ListInfo
+    {
+        node_ptrs[0],
+        node_index_to_rand_node_index
+    };
 }
 
 void TextFileReader::set_filename(std::string new_filename) {

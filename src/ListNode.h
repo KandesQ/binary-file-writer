@@ -6,6 +6,7 @@
 #define BINARY_FILE_WRITER_LISTNODE_H
 
 #include <string>
+#include <unordered_map>
 
 namespace List {
 
@@ -14,6 +15,11 @@ namespace List {
         ListNode * next = nullptr;
         ListNode * rand = nullptr;
         std::string data;
+    };
+
+    struct ListInfo {
+        ListNode* head = nullptr;
+        std::unordered_map<uint32_t, int> node_index_to_rand_node_index;
     };
 
     void clear_list(ListNode*& head);

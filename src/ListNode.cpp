@@ -18,6 +18,8 @@ namespace List {
             delete head;
             head = next;
         }
+
+        std::cout << "List cleared" << std::endl;
     }
 
     void print_list(const ListNode* const head) {

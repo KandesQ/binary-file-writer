@@ -16,9 +16,7 @@ class TextFileReader
 public:
     explicit TextFileReader(std::string filename);
 
-    List::ListNode* read_list();
-
-    std::unordered_map<uint32_t, int> get_rand_index_match() const;
+    List::ListInfo read_list();
 
     void set_filename(std::string new_filename);
 
