@@ -5,6 +5,7 @@
 #include <utility>
 #include <fstream>
 #include <ios>
+#include <iostream>
 
 #include "BinaryFileWriter.h"
 
@@ -29,27 +30,55 @@ void BinaryFileWriter::write_list(
         ++list_length;
         current_node = current_node->next;
     }
-    out.write(reinterpret_cast<char*>(&list_length), sizeof(list_length));
+
+    // 256 MB
+    constexpr uint32_t BUFFER_LIMIT = 256 * 1024 * 1024;
+    std::vector<char> buffer;
+    buffer.reserve(BUFFER_LIMIT);
+
+    buffer.insert(
+        buffer.end(),
+        reinterpret_cast<char*>(&list_length),
+        reinterpret_cast<char*>(&list_length) + sizeof(list_length)
+    );
 
     current_node = head;
     uint32_t node_index = 0;
     while (current_node) {
+        size_t allowance = sizeof(uint16_t) + current_node->data.size() + sizeof(int);
+
+        if (buffer.size() + allowance >= BUFFER_LIMIT) {
+            std::cout << "[write_list]: Buffer reached limit. Flushing...";
+            out.write(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+            std::cout << "[write_list]: Buffer flushed";
+            buffer.clear();
+        }
+
         uint16_t node_data_size = current_node->data.size();
 
-        out.write(reinterpret_cast<char*>(&node_data_size), sizeof(node_data_size));
-        out.write(
-            current_node->data.data(),
-            node_data_size
+        buffer.insert(
+            buffer.end(),
+            reinterpret_cast<char*>(&node_data_size),
+            reinterpret_cast<char*>(&node_data_size) + sizeof(node_data_size)
         );
 
-        int rand_node_index = rand_index_match.at(node_index);
-        out.write(
-            reinterpret_cast<char*>(&rand_node_index), sizeof(rand_node_index)
+        buffer.insert(
+            buffer.end(),
+            current_node->data.begin(),
+            current_node->data.end()
+        );
+
+        int rand_index = rand_index_match.at(node_index);
+        buffer.insert(
+            buffer.end(),
+            reinterpret_cast<char*>(&rand_index),
+            reinterpret_cast<char*>(&rand_index) + sizeof(rand_index)
         );
 
         current_node = current_node->next;
         ++node_index;
     }
+    out.write(buffer.data(), static_cast<std::streamsize>(buffer.size()));
 }
 
 void BinaryFileWriter::set_filename(std::string new_filename) {
